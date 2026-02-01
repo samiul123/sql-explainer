@@ -1,80 +1,9 @@
-/* @import "tailwindcss";
+@import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@theme {
+  --color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  @apply bg-slate-950 text-slate-100;
 }
- */
-
-:root { color-scheme: light; }
-body {
-  margin: 0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-  background: #0b0f19;
-  color: #e7eaf0;
-}
-.container { max-width: 1100px; margin: 0 auto; padding: 28px; }
-.card {
-  background: #121a2a;
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
-  padding: 16px;
-}
-.row { display: grid; gap: 12px; }
-.grid2 { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; }
-label { font-size: 12px; opacity: 0.9; }
-textarea, select, input {
-  width: 100%;
-  background: #0b1222;
-  color: #e7eaf0;
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 10px;
-  padding: 10px;
-  outline: none;
-}
-textarea { min-height: 180px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-button {
-  background: #2b6cff;
-  border: none;
-  color: white;
-  padding: 10px 12px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 600;
-}
-button:disabled { opacity: 0.6; cursor: not-allowed; }
-.tabs { display: flex; gap: 8px; flex-wrap: wrap; }
-.tab {
-  background: transparent;
-  border: 1px solid rgba(255,255,255,0.12);
-  color: #e7eaf0;
-  padding: 8px 10px;
-  border-radius: 999px;
-  cursor: pointer;
-}
-.tabActive { background: rgba(43,108,255,0.25); border-color: rgba(43,108,255,0.6); }
-.small { font-size: 12px; opacity: 0.9; }
-.kv { display:flex; gap:10px; flex-wrap:wrap; }
-.badge { font-size: 12px; padding: 4px 8px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.12); }
-.hr { height:1px; background: rgba(255,255,255,0.08); margin: 12px 0; }
-pre { white-space: pre-wrap; word-wrap: break-word; background:#0b1222; padding:12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); }

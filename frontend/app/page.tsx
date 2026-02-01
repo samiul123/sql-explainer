@@ -95,17 +95,17 @@ ORDER BY cnt DESC;`
   }
 
   return (
-    <div className="container">
-      <h1 style={{ marginTop: 0 }}>SQL Explain + Optimize</h1>
-      <p className="small">
+    <div className="max-w-7xl mx-auto px-7 py-7 md:px-7">
+      <h1 className="mt-0 text-3xl font-bold">SQL Explain + Optimize</h1>
+      <p className="text-xs opacity-90 mb-3">
         Paste a query → get explanation + issues + optimization suggestions + optional rewrite.
       </p>
 
-      <div className="grid2">
-        <div className="card row">
+      <div className="grid gap-3 lg:grid-cols-2 items-start">
+        <div className="bg-slate-900 border border-white/10 rounded-2xl p-4 grid gap-3">
           <div>
-            <label>Dialect</label>
-            <select value={dialect} onChange={(e) => setDialect(e.target.value)}>
+            <label className="block text-xs opacity-90 mb-1.5">Dialect</label>
+            <select value={dialect} onChange={(e) => setDialect(e.target.value)} className="w-full bg-slate-950 text-slate-100 border border-white/10 rounded-lg px-2.5 py-2.5 outline-none">
               <option value="postgres">Postgres</option>
               <option value="mysql">MySQL</option>
               <option value="sqlite">SQLite</option>
@@ -116,91 +116,91 @@ ORDER BY cnt DESC;`
           </div>
 
           <div>
-            <label>SQL</label>
-            <textarea value={sql} onChange={(e) => setSql(e.target.value)} />
+            <label className="block text-xs opacity-90 mb-1.5">SQL</label>
+            <textarea value={sql} onChange={(e) => setSql(e.target.value)} className="w-full min-h-44 bg-slate-950 text-slate-100 border border-white/10 rounded-lg px-2.5 py-2.5 outline-none font-mono text-sm resize-y" />
           </div>
 
           <div>
-            <label>Schema (optional)</label>
-            <textarea value={schemaText} onChange={(e) => setSchemaText(e.target.value)} />
+            <label className="block text-xs opacity-90 mb-1.5">Schema (optional)</label>
+            <textarea value={schemaText} onChange={(e) => setSchemaText(e.target.value)} className="w-full min-h-44 bg-slate-950 text-slate-100 border border-white/10 rounded-lg px-2.5 py-2.5 outline-none font-mono text-sm resize-y" />
           </div>
 
-          <button onClick={analyze} disabled={loading || !sql.trim()}>
+          <button onClick={analyze} disabled={loading || !sql.trim()} className="bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white px-3 py-2.5 rounded-lg font-semibold">
             {loading ? "Analyzing..." : "Analyze"}
           </button>
 
-          {err && <div className="small" style={{ color: "#ff8b8b" }}>{err}</div>}
+          {err && <div className="text-xs opacity-90 text-red-400">{err}</div>}
         </div>
 
-        <div className="card row">
-          <div className="kv">
-            <span className="badge">API: {API_BASE}</span>
-            <span className="badge">Confidence: {res?.confidence ?? "-"}</span>
-            <span className="badge">Parsed: {res ? (res.parsed ? "yes" : "no") : "-"}</span>
-            <span className="badge">Issues: {res ? `${issueCounts.critical} critical, ${issueCounts.warning} warn, ${issueCounts.info} info` : "-"}</span>
+        <div className="bg-slate-900 border border-white/10 rounded-2xl p-4 grid gap-3">
+          <div className="flex gap-2.5 flex-wrap">
+            <span className="text-xs px-2 py-1 rounded-full border border-white/10 whitespace-nowrap">API: {API_BASE}</span>
+            <span className="text-xs px-2 py-1 rounded-full border border-white/10 whitespace-nowrap">Confidence: {res?.confidence ?? "-"}</span>
+            <span className="text-xs px-2 py-1 rounded-full border border-white/10 whitespace-nowrap">Parsed: {res ? (res.parsed ? "yes" : "no") : "-"}</span>
+            <span className="text-xs px-2 py-1 rounded-full border border-white/10 whitespace-nowrap">Issues: {res ? `${issueCounts.critical} critical, ${issueCounts.warning} warn, ${issueCounts.info} info` : "-"}</span>
           </div>
 
-          <div className="tabs">
-            <button className={`tab ${tab === "explain" ? "tabActive" : ""}`} onClick={() => setTab("explain")}>
+          <div className="flex gap-2 flex-wrap">
+            <button className={`bg-transparent border ${tab === "explain" ? "bg-blue-600/25 border-blue-600/60" : "border-white/10"} text-slate-100 px-2.5 py-2 rounded-full cursor-pointer text-xs whitespace-nowrap`} onClick={() => setTab("explain")}>
               Explanation
             </button>
-            <button className={`tab ${tab === "issues" ? "tabActive" : ""}`} onClick={() => setTab("issues")}>
+            <button className={`bg-transparent border ${tab === "issues" ? "bg-blue-600/25 border-blue-600/60" : "border-white/10"} text-slate-100 px-2.5 py-2 rounded-full cursor-pointer text-xs whitespace-nowrap`} onClick={() => setTab("issues")}>
               Issues
             </button>
-            <button className={`tab ${tab === "opt" ? "tabActive" : ""}`} onClick={() => setTab("opt")}>
+            <button className={`bg-transparent border ${tab === "opt" ? "bg-blue-600/25 border-blue-600/60" : "border-white/10"} text-slate-100 px-2.5 py-2 rounded-full cursor-pointer text-xs whitespace-nowrap`} onClick={() => setTab("opt")}>
               Optimizations
             </button>
-            <button className={`tab ${tab === "rewrite" ? "tabActive" : ""}`} onClick={() => setTab("rewrite")}>
+            <button className={`bg-transparent border ${tab === "rewrite" ? "bg-blue-600/25 border-blue-600/60" : "border-white/10"} text-slate-100 px-2.5 py-2 rounded-full cursor-pointer text-xs whitespace-nowrap`} onClick={() => setTab("rewrite")}>
               Rewritten SQL
             </button>
           </div>
 
-          <div className="hr" />
+          <div className="h-px bg-white/10 my-3" />
 
           {!res && (
-            <div className="small">
+            <div className="text-xs opacity-90">
               Run analysis to see results.
             </div>
           )}
 
           {res && tab === "explain" && (
-            <div className="row">
+            <div className="grid gap-3">
               <div>
-                <div className="small" style={{ marginBottom: 6 }}>Plain English</div>
-                <pre>{res.explanation}</pre>
-                <button onClick={() => copy(res.explanation)}>Copy explanation</button>
+                <div className="text-xs opacity-90 mb-1.5">Summary</div>
+                <pre className="whitespace-pre-wrap break-words bg-slate-950 px-3 py-3 rounded-xl border border-white/10 text-sm leading-relaxed m-0">{res.explanation}</pre>
+                {/* <button onClick={() => copy(res.explanation)} className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-semibold text-sm">Copy explanation</button> */}
               </div>
 
               <div>
-                <div className="small" style={{ marginBottom: 6 }}>Breakdown</div>
-                <pre>{res.breakdown.map((b, i) => `${i + 1}. ${b}`).join("\n")}</pre>
+                <div className="text-xs opacity-90 mb-1.5">Breakdown</div>
+                <pre className="whitespace-pre-wrap break-words bg-slate-950 px-3 py-3 rounded-xl border border-white/10 text-sm leading-relaxed m-0">{res.breakdown.map((b, i) => `${i + 1}. ${b}`).join("\n")}</pre>
               </div>
 
               <div>
-                <div className="small" style={{ marginBottom: 6 }}>Assumptions</div>
-                <pre>{(res.assumptions?.length ? res.assumptions : ["(none)"]).join("\n")}</pre>
+                <div className="text-xs opacity-90 mb-1.5">Assumptions</div>
+                <pre className="whitespace-pre-wrap break-words bg-slate-950 px-3 py-3 rounded-xl border border-white/10 text-sm leading-relaxed m-0">{(res.assumptions?.length ? res.assumptions : ["(none)"]).join("\n")}</pre>
               </div>
 
               <div>
-                <div className="small" style={{ marginBottom: 6 }}>Parsed structure (debug)</div>
-                <pre>{JSON.stringify(res.structure, null, 2)}</pre>
+                <div className="text-xs opacity-90 mb-1.5">Parsed structure (debug)</div>
+                <pre className="whitespace-pre-wrap break-words bg-slate-950 px-3 py-3 rounded-xl border border-white/10 text-sm leading-relaxed m-0">{JSON.stringify(res.structure, null, 2)}</pre>
               </div>
             </div>
           )}
 
           {res && tab === "issues" && (
-            <div className="row">
+            <div className="grid gap-3">
               {res.issues.length === 0 ? (
-                <pre>No issues detected by static rules.</pre>
+                <pre className="whitespace-pre-wrap break-words bg-slate-950 px-3 py-3 rounded-xl border border-white/10 text-sm leading-relaxed m-0">No issues detected by static rules.</pre>
               ) : (
                 res.issues.map((i, idx) => (
-                  <div key={idx} className="card" style={{ background: "#0f1728" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                  <div key={idx} className="bg-slate-800 border border-white/10 rounded-2xl p-4">
+                    <div className="flex justify-between gap-2">
                       <strong>{i.code}</strong>
-                      <span className="badge">{i.severity}</span>
+                      <span className="text-xs px-2 py-1 rounded-full border border-white/10 whitespace-nowrap">{i.severity}</span>
                     </div>
-                    <div className="small" style={{ marginTop: 6 }}>{i.message}</div>
-                    {i.evidence && <pre style={{ marginTop: 10 }}>{i.evidence}</pre>}
+                    <div className="text-xs opacity-90 mt-1.5">{i.message}</div>
+                    {i.evidence && <pre className="mt-2.5 whitespace-pre-wrap break-words bg-slate-950 px-3 py-3 rounded-xl border border-white/10 text-sm leading-relaxed m-0">{i.evidence}</pre>}
                   </div>
                 ))
               )}
@@ -208,46 +208,46 @@ ORDER BY cnt DESC;`
           )}
 
           {res && tab === "opt" && (
-            <div className="row">
+            <div className="grid gap-3">
               {res.suggestions.length === 0 ? (
-                <pre>No suggestions returned.</pre>
+                <pre className="whitespace-pre-wrap break-words bg-slate-950 px-3 py-3 rounded-xl border border-white/10 text-sm leading-relaxed m-0">No suggestions returned.</pre>
               ) : (
                 res.suggestions.map((s, idx) => (
-                  <div key={idx} className="card" style={{ background: "#0f1728" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+                  <div key={idx} className="bg-slate-800 border border-white/10 rounded-2xl p-4">
+                    <div className="flex justify-between gap-2">
                       <strong>{s.title}</strong>
-                      <span className="badge">impact: {s.impact}</span>
+                      <span className="text-xs px-2 py-1 rounded-full border border-white/10 whitespace-nowrap">impact: {s.impact}</span>
                     </div>
 
-                    <div className="small" style={{ marginTop: 6 }}>{s.rationale}</div>
+                    <div className="text-xs opacity-90 mt-1.5">{s.rationale}</div>
 
                     {s.actions?.length > 0 && (
                       <>
-                        <div className="small" style={{ marginTop: 10 }}>Actions</div>
-                        <pre>{s.actions.map((a, i) => `- ${a}`).join("\n")}</pre>
+                        <div className="text-xs opacity-90 mt-2.5">Actions</div>
+                        <pre className="whitespace-pre-wrap break-words bg-slate-950 px-3 py-3 rounded-xl border border-white/10 text-sm leading-relaxed m-0">{s.actions.map((a, i) => `- ${a}`).join("\n")}</pre>
                       </>
                     )}
 
                     {s.index_sql?.length > 0 && (
                       <>
-                        <div className="small" style={{ marginTop: 10 }}>Index SQL</div>
-                        <pre>{s.index_sql.join("\n")}</pre>
-                        <button onClick={() => copy(s.index_sql.join("\n"))}>Copy index SQL</button>
+                        <div className="text-xs opacity-90 mt-2.5">Index SQL</div>
+                        <pre className="whitespace-pre-wrap break-words bg-slate-950 px-3 py-3 rounded-xl border border-white/10 text-sm leading-relaxed m-0">{s.index_sql.join("\n")}</pre>
+                        <button onClick={() => copy(s.index_sql.join("\n"))} className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-semibold text-sm">Copy index SQL</button>
                       </>
                     )}
 
                     {s.rewrite_sql && (
                       <>
-                        <div className="small" style={{ marginTop: 10 }}>Suggested rewrite</div>
-                        <pre>{s.rewrite_sql}</pre>
-                        <button onClick={() => copy(s.rewrite_sql!)}>Copy rewrite</button>
+                        <div className="text-xs opacity-90 mt-2.5">Suggested rewrite</div>
+                        <pre className="whitespace-pre-wrap break-words bg-slate-950 px-3 py-3 rounded-xl border border-white/10 text-sm leading-relaxed m-0">{s.rewrite_sql}</pre>
+                        <button onClick={() => copy(s.rewrite_sql!)} className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-semibold text-sm">Copy rewrite</button>
                       </>
                     )}
 
                     {s.caveats?.length > 0 && (
                       <>
-                        <div className="small" style={{ marginTop: 10 }}>Caveats</div>
-                        <pre>{s.caveats.map((c) => `- ${c}`).join("\n")}</pre>
+                        <div className="text-xs opacity-90 mt-2.5">Caveats</div>
+                        <pre className="whitespace-pre-wrap break-words bg-slate-950 px-3 py-3 rounded-xl border border-white/10 text-sm leading-relaxed m-0">{s.caveats.map((c) => `- ${c}`).join("\n")}</pre>
                       </>
                     )}
                   </div>
@@ -257,26 +257,26 @@ ORDER BY cnt DESC;`
           )}
 
           {res && tab === "rewrite" && (
-            <div className="row">
+            <div className="grid gap-3">
               <div>
-                <div className="small" style={{ marginBottom: 6 }}>Rewritten SQL (top-level)</div>
-                <pre>{res.rewritten_sql || "(no rewritten SQL returned)"}</pre>
+                <div className="text-xs opacity-90 mb-1.5">Rewritten SQL (top-level)</div>
+                <pre className="whitespace-pre-wrap break-words bg-slate-950 px-3 py-3 rounded-xl border border-white/10 text-sm leading-relaxed m-0">{res.rewritten_sql || "(no rewritten SQL returned)"}</pre>
                 {res.rewritten_sql && (
-                  <button onClick={() => copy(res.rewritten_sql!)}>Copy rewritten SQL</button>
+                  <button onClick={() => copy(res.rewritten_sql!)} className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-semibold text-sm">Copy rewritten SQL</button>
                 )}
               </div>
 
               <div>
-                <div className="small" style={{ marginBottom: 6 }}>Normalized SQL (what the backend analyzed)</div>
-                <pre>{res.normalized_sql}</pre>
-                <button onClick={() => copy(res.normalized_sql)}>Copy normalized SQL</button>
+                <div className="text-xs opacity-90 mb-1.5">Normalized SQL (what the backend analyzed)</div>
+                <pre className="whitespace-pre-wrap break-words bg-slate-950 px-3 py-3 rounded-xl border border-white/10 text-sm leading-relaxed m-0">{res.normalized_sql}</pre>
+                <button onClick={() => copy(res.normalized_sql)} className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-semibold text-sm">Copy normalized SQL</button>
               </div>
             </div>
           )}
         </div>
       </div>
 
-      <div style={{ marginTop: 18 }} className="small">
+      <div className="mt-4 text-xs opacity-90">
         Tip: Add real performance grounding later by letting users paste EXPLAIN output and feeding it into the optimizer chain.
       </div>
     </div>
