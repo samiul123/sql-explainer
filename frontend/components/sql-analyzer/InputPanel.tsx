@@ -1,3 +1,5 @@
+import { SqlEditor } from "./SqlEditor";
+
 interface InputPanelProps {
   dialect: string;
   sql: string;
@@ -41,19 +43,19 @@ export function InputPanel({
 
       <div>
         <label className="block text-xs opacity-90 mb-1.5">SQL</label>
-        <textarea
+        <SqlEditor
           value={sql}
-          onChange={(e) => onSqlChange(e.target.value)}
-          className="w-full min-h-44 bg-slate-950 text-slate-100 border border-white/10 rounded-lg px-2.5 py-2.5 outline-none font-mono text-sm resize-y"
+          onChange={onSqlChange}
+          placeholder="Enter your SQL query..."
         />
       </div>
 
       <div>
         <label className="block text-xs opacity-90 mb-1.5">Schema (optional)</label>
-        <textarea
+        <SqlEditor
           value={schemaText}
-          onChange={(e) => onSchemaChange(e.target.value)}
-          className="w-full min-h-44 bg-slate-950 text-slate-100 border border-white/10 rounded-lg px-2.5 py-2.5 outline-none font-mono text-sm resize-y"
+          onChange={onSchemaChange}
+          placeholder="CREATE TABLE users (id INT PRIMARY KEY, ...);"
         />
       </div>
 

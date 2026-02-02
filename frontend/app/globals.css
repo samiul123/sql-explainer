@@ -7,3 +7,20 @@
 body {
   @apply bg-slate-950 text-slate-100;
 }
+
+/* CodeMirror custom styling for better integration */
+.sql-editor .cm-editor {
+  background: transparent !important;
+}
+
+.sql-editor .cm-gutters {
+  border-right: 1px solid rgb(255 255 255 / 0.1);
+}
+
+.sql-editor .cm-scroller {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.sql-editor .cm-focused {
+  outline: none;
+}
