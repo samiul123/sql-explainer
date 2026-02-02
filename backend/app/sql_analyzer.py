@@ -47,6 +47,7 @@ def parse_sql(sql: str, dialect: str) -> Tuple[bool, str, Dict[str, Any]]:
         "ctes": [],
         "functions_in_where": [],
         "select_star": False,
+        "count_star": False,
     }
 
     # joins
@@ -65,10 +66,19 @@ def parse_sql(sql: str, dialect: str) -> Tuple[bool, str, Dict[str, Any]]:
             alias = cte.alias_or_name
             structure["ctes"].append(alias)
 
-    # select *
-    for s in tree.find_all(exp.Star):
-        structure["select_star"] = True
-        break
+    # select * (but not COUNT(*), SUM(*), etc.)
+    for star in tree.find_all(exp.Star):
+        # Check if this star is directly in the SELECT list, not inside a function
+        parent = star.parent
+        if isinstance(parent, exp.Select):
+            structure["select_star"] = True
+            break
+
+    # Detect COUNT(*)
+    for func in tree.find_all(exp.Count):
+        for star in func.find_all(exp.Star):
+            structure["count_star"] = True
+            break
 
     # functions in where
     where = tree.args.get("where")
@@ -89,6 +99,15 @@ def lint_sql(sql: str, dialect: str, structure: Dict[str, Any]) -> List[Issue]:
             severity="warning",
             message="Avoid SELECT * in production queries; select only needed columns.",
             evidence="SELECT *"
+        ))
+
+    # Rule 1b: COUNT(*) usage
+    if structure.get("count_star"):
+        issues.append(Issue(
+            code="COUNT_STAR",
+            severity="info",
+            message="COUNT(*) counts all rows including NULLs. If you need to count non-NULL values in a specific column, use COUNT(column_name) instead.",
+            evidence="COUNT(*)"
         ))
 
     # Rule 2: Missing LIMIT (simple heuristic)
