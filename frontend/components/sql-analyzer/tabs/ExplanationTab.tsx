@@ -28,10 +28,10 @@ export function ExplanationTab({ result }: ExplanationTabProps) {
         </CodeBlock>
       </div>
 
-      <div>
+      {/* <div>
         <SectionLabel>Parsed structure (debug)</SectionLabel>
         <CodeBlock>{JSON.stringify(result.structure, null, 2)}</CodeBlock>
-      </div>
+      </div> */}
     </div>
   );
 }

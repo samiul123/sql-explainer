@@ -1,19 +1,26 @@
 import { Suggestion } from "../types";
 import { Badge } from "../../ui/Badge";
 import { CodeBlock } from "../../ui/CodeBlock";
-import { SectionLabel } from "../../ui/SectionLabel";
+import { SqlViewerSection } from "../SqlViewerSection";
 
 interface SuggestionCardProps {
   suggestion: Suggestion;
   onCopy: (text: string) => void;
+  copied?: boolean;
 }
 
-export function SuggestionCard({ suggestion, onCopy }: SuggestionCardProps) {
+const IMPACT_COLORS: Record<string, string> = {
+  high: "bg-purple-500/20 border-purple-500/50 text-purple-300",
+  medium: "bg-blue-500/20 border-blue-500/50 text-blue-300",
+  low: "bg-green-500/20 border-green-500/50 text-green-300",
+};
+
+export function SuggestionCard({ suggestion, onCopy, copied }: SuggestionCardProps) {
   return (
     <div className="bg-slate-800 border border-white/10 rounded-2xl p-4">
       <div className="flex justify-between gap-2">
         <strong>{suggestion.title}</strong>
-        <Badge>impact: {suggestion.impact}</Badge>
+        <Badge className={IMPACT_COLORS[suggestion.impact] || ""}>{suggestion.impact}</Badge>
       </div>
 
       <div className="text-xs opacity-90 mt-1.5">{suggestion.rationale}</div>
@@ -28,29 +35,21 @@ export function SuggestionCard({ suggestion, onCopy }: SuggestionCardProps) {
       )}
 
       {suggestion.index_sql?.length > 0 && (
-        <>
-          <div className="text-xs opacity-90 mt-2.5">Index SQL</div>
-          <CodeBlock>{suggestion.index_sql.join("\n")}</CodeBlock>
-          <button
-            onClick={() => onCopy(suggestion.index_sql.join("\n"))}
-            className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-semibold text-sm"
-          >
-            Copy index SQL
-          </button>
-        </>
+        <SqlViewerSection
+          value={suggestion.index_sql.join("\n")}
+          onCopy={onCopy}
+          copied={copied}
+          sectionLabel="Index SQL"
+        />
       )}
 
       {suggestion.rewrite_sql && (
-        <>
-          <div className="text-xs opacity-90 mt-2.5">Suggested rewrite</div>
-          <CodeBlock>{suggestion.rewrite_sql}</CodeBlock>
-          <button
-            onClick={() => onCopy(suggestion.rewrite_sql!)}
-            className="mt-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-semibold text-sm"
-          >
-            Copy rewrite
-          </button>
-        </>
+        <SqlViewerSection
+          value={suggestion.rewrite_sql}
+          onCopy={onCopy}
+          copied={copied}
+          sectionLabel="Suggested rewrite"
+        />
       )}
 
       {suggestion.caveats?.length > 0 && (

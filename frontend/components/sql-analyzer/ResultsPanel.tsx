@@ -13,6 +13,7 @@ interface ResultsPanelProps {
   activeTab: "explain" | "issues" | "opt" | "rewrite";
   onTabChange: (tab: "explain" | "issues" | "opt" | "rewrite") => void;
   onCopy: (text: string) => void;
+  copied?: boolean;
 }
 
 export function ResultsPanel({
@@ -22,10 +23,11 @@ export function ResultsPanel({
   activeTab,
   onTabChange,
   onCopy,
+  copied,
 }: ResultsPanelProps) {
   return (
-    <div className="bg-slate-900 border border-white/10 rounded-2xl p-4 grid gap-3">
-      <div className="flex gap-2.5 flex-wrap">
+    <div className="bg-slate-900 border border-white/10 rounded-2xl p-4 h-full flex flex-col gap-3 overflow-hidden">
+      <div className="flex gap-2.5 flex-wrap flex-shrink-0">
         <Badge>API: {apiBase}</Badge>
         <Badge>Confidence: {result?.confidence ?? "-"}</Badge>
         <Badge>Parsed: {result ? (result.parsed ? "yes" : "no") : "-"}</Badge>
@@ -49,18 +51,20 @@ export function ResultsPanel({
         </TabButton>
       </div>
 
-      <div className="h-px bg-white/10 my-3" />
+      <div className="h-px bg-white/10 flex-shrink-0" />
 
-      {!result && (
-        <div className="text-xs opacity-90">
-          Run analysis to see results.
-        </div>
-      )}
+      <div className="flex-1 overflow-auto min-h-0">
+        {!result && (
+          <div className="text-xs opacity-90">
+            Run analysis to see results.
+          </div>
+        )}
 
-      {result && activeTab === "explain" && <ExplanationTab result={result} />}
-      {result && activeTab === "issues" && <IssuesTab issues={result.issues} />}
-      {result && activeTab === "opt" && <OptimizationsTab suggestions={result.suggestions} onCopy={onCopy} />}
-      {result && activeTab === "rewrite" && <RewriteTab result={result} onCopy={onCopy} />}
+        {result && activeTab === "explain" && <ExplanationTab result={result} />}
+        {result && activeTab === "issues" && <IssuesTab issues={result.issues} />}
+        {result && activeTab === "opt" && <OptimizationsTab suggestions={result.suggestions} onCopy={onCopy} copied={copied} />}
+        {result && activeTab === "rewrite" && <RewriteTab result={result} onCopy={onCopy} copied={copied} />}
+      </div>
     </div>
   );
 }

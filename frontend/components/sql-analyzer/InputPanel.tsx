@@ -1,5 +1,14 @@
 import { SqlEditor } from "./SqlEditor";
 
+const DIALECTS = [
+  { value: "postgres", label: "Postgres" },
+  { value: "mysql", label: "MySQL" },
+  { value: "sqlite", label: "SQLite" },
+  { value: "tsql", label: "SQL Server (T-SQL)" },
+  { value: "bigquery", label: "BigQuery" },
+  { value: "snowflake", label: "Snowflake" },
+];
+
 interface InputPanelProps {
   dialect: string;
   sql: string;
@@ -24,7 +33,7 @@ export function InputPanel({
   onAnalyze,
 }: InputPanelProps) {
   return (
-    <div className="bg-slate-900 border border-white/10 rounded-2xl p-4 grid gap-3">
+    <div className="bg-slate-900 border border-white/10 rounded-2xl p-4 grid gap-3 h-full">
       <div>
         <label className="block text-xs opacity-90 mb-1.5">Dialect</label>
         <select
@@ -32,12 +41,11 @@ export function InputPanel({
           onChange={(e) => onDialectChange(e.target.value)}
           className="w-full bg-slate-950 text-slate-100 border border-white/10 rounded-lg px-2.5 py-2.5 outline-none"
         >
-          <option value="postgres">Postgres</option>
-          <option value="mysql">MySQL</option>
-          <option value="sqlite">SQLite</option>
-          <option value="tsql">SQL Server (T-SQL)</option>
-          <option value="bigquery">BigQuery</option>
-          <option value="snowflake">Snowflake</option>
+          {DIALECTS.map((d) => (
+            <option key={d.value} value={d.value}>
+              {d.label}
+            </option>
+          ))}
         </select>
       </div>
 

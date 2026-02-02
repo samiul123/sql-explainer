@@ -23,7 +23,7 @@ export default function Page() {
   } = useSqlAnalyzer({ apiBase: API_BASE });
 
   const { activeTab, setActiveTab, issueCounts } = useAnalysisResults({ result });
-  const { copy } = useClipboard();
+  const { copy, copied } = useClipboard();
 
   return (
     <div className="max-w-7xl mx-auto px-7 py-7 md:px-7">
@@ -32,7 +32,7 @@ export default function Page() {
         Paste a query → get explanation + issues + optimization suggestions + optional rewrite.
       </p>
 
-      <div className="grid gap-3 lg:grid-cols-2 items-start">
+      <div className="grid gap-3 lg:grid-cols-2 items-start h-[600px]">
         <InputPanel
           dialect={dialect}
           sql={sql}
@@ -52,6 +52,7 @@ export default function Page() {
           activeTab={activeTab}
           onTabChange={setActiveTab}
           onCopy={copy}
+          copied={copied}
         />
       </div>
 
