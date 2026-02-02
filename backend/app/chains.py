@@ -19,7 +19,7 @@ class ExplainOutput(BaseModel):
 class OptimizeOutput(BaseModel):
     suggestions: List[Suggestion] = Field(default_factory=list)
     rewritten_sql: Optional[str] = None
-    confidence: str = Field(..., description="low|medium|high")
+    confidence: Optional[str] = Field("medium", description="low|medium|high")
 
 def get_llm() -> ChatOllama:
     model = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
@@ -69,7 +69,8 @@ def build_optimize_chain():
          "Guidelines:\n"
          "- Provide 3 to 8 suggestions.\n"
          "- Include index SQL statements if helpful.\n"
-         "- Provide rewritten_sql only if you are confident it parses in the dialect.\n")
+         "- Provide rewritten_sql only if you are confident it parses in the dialect.\n"
+         "- MUST include a 'confidence' field (low/medium/high) for your overall assessment.\n")
     ])
 
     return prompt | get_llm() | parser
