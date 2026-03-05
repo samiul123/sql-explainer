@@ -2,9 +2,11 @@ from typing import Optional
 
 from sqlglot import exp
 from ..schemas import Issue
+from ..dialects import register_rule
 from .base import Rule
 
 
+@register_rule()
 class SubqueryPushdownRule(Rule):
     def check(self, sql: str, tree: exp.Expression, dialect: str) -> Optional[Issue]:
         has_subquery = bool(tree.find(exp.Subquery))
