@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 from .schemas import AnalyzeRequest, AnalyzeResponse
-from .sql_analyzer import parse_sql, lint_sql
+from .sql_analyzer import get_linter, extract_structure_for_llm
 from .chains import build_explain_chain, build_optimize_chain, ExplainOutput, OptimizeOutput
 from langchain_core.output_parsers import PydanticOutputParser
 
@@ -35,9 +35,12 @@ def health():
 
 @app.post("/analyze", response_model=AnalyzeResponse)
 def analyze(req: AnalyzeRequest):
-    parsed_ok, normalized_sql, structure = parse_sql(req.sql, req.dialect)
-    issues = lint_sql(normalized_sql, req.dialect, structure) if parsed_ok else []
-
+    # Get cached linter and run complete analysis
+    linter = get_linter(req.dialect)
+    parsed_ok, normalized_sql, tree, issues = linter.analyze(req.sql)
+    
+    # Extract structure for LLM context
+    structure = extract_structure_for_llm(tree) if tree else {}
     structure_json = json.dumps(structure, indent=2)
     issues_json = json.dumps([i.model_dump() for i in issues], indent=2)
 
