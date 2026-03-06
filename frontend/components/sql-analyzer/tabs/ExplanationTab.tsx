@@ -1,6 +1,7 @@
 import { AnalyzeResponse } from "../types";
 import { CodeBlock } from "../../ui/CodeBlock";
 import { SectionLabel } from "../../ui/SectionLabel";
+import { ExecutionFlow } from "../ExecutionFlow";
 
 interface ExplanationTabProps {
   result: AnalyzeResponse;
@@ -9,6 +10,8 @@ interface ExplanationTabProps {
 export function ExplanationTab({ result }: ExplanationTabProps) {
   return (
     <div className="grid gap-3">
+      
+
       <div>
         <SectionLabel>Summary</SectionLabel>
         <CodeBlock>{result.explanation}</CodeBlock>
@@ -27,6 +30,13 @@ export function ExplanationTab({ result }: ExplanationTabProps) {
           {(result.assumptions?.length ? result.assumptions : ["(none)"]).join("\n")}
         </CodeBlock>
       </div>
+
+      {result.execution_sequence?.length > 0 && (
+        <div>
+          <SectionLabel>Logical Execution Sequence</SectionLabel>
+          <ExecutionFlow steps={result.execution_sequence} />
+        </div>
+      )}
 
       {/* <div>
         <SectionLabel>Parsed structure (debug)</SectionLabel>

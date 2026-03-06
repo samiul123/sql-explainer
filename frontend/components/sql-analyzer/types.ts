@@ -20,6 +20,12 @@ export type AnalyzeResponse = {
   normalized_sql: string;
   parsed: boolean;
   structure: any;
+  execution_sequence: Array<{
+    step: number;
+    clause: string;
+    description: string;
+    sql?: string;
+  }>;
   explanation: string;
   breakdown: string[];
   assumptions: string[];

@@ -28,6 +28,7 @@ class AnalyzeResponse(BaseModel):
     normalized_sql: str
     parsed: bool
     structure: Dict[str, Any] = Field(default_factory=dict)
+    execution_sequence: List[Dict[str, Any]] = Field(default_factory=list)
 
     explanation: str
     breakdown: List[str] = Field(default_factory=list)

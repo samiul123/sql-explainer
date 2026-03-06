@@ -102,8 +102,10 @@ class DialectLinter:
     
     def lint(self, sql: str, tree: exp.Expression) -> List[Issue]:
         """Run all rules and collect issues"""
+        print(f"Linting with {len(self.rules)} rules for dialect {self.dialect}")
         issues: List[Issue] = []
         for rule in self.rules:
+            print(f"Running rule {rule.__class__.__name__} for dialect {self.dialect}")
             issue = rule.check(sql, tree, self.dialect)
             if issue:
                 issues.append(issue)
