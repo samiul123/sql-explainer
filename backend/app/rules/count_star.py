@@ -10,7 +10,7 @@ from .base import Rule
 class CountStarRule(Rule):
     def check(self, sql: str, tree: exp.Expression, dialect: str) -> List[Issue]:
         for func in tree.find_all(exp.Count):
-            for star in func.find_all(exp.Star):
+            if func.find(exp.Star):
                 return [Issue(
                     code="COUNT_STAR",
                     severity="info",
