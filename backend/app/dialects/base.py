@@ -104,9 +104,7 @@ class DialectLinter:
         """Run all rules and collect issues"""
         issues: List[Issue] = []
         for rule in self.rules:
-            issue = rule.check(sql, tree, self.dialect)
-            if issue:
-                issues.append(issue)
+            issues.extend(rule.check(sql, tree, self.dialect))
         return issues
     
     def analyze(self, sql: str) -> Tuple[bool, str, Optional[exp.Expression], List[Issue]]:

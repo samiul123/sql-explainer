@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List
 
 from sqlglot import exp
 from ..schemas import Issue
@@ -8,7 +8,7 @@ from .base import Rule
 
 @register_rule()
 class HavingToWhereRule(Rule):
-    def check(self, sql: str, tree: exp.Expression, dialect: str) -> Optional[Issue]:
+    def check(self, sql: str, tree: exp.Expression, dialect: str) -> List[Issue]:
         has_having = tree.args.get("having") is not None
         has_group_by = tree.args.get("group") is not None
         
@@ -25,10 +25,10 @@ class HavingToWhereRule(Rule):
                 )
                 
                 if not has_aggregate:
-                    return Issue(
+                    return [Issue(
                         code="PUSHDOWN_HAVING_TO_WHERE",
                         severity="warning",
                         message="Non-aggregate filter in HAVING should be moved to WHERE to reduce rows before grouping (predicate pushdown)",
                         evidence=having_node.sql()[:100]
-                    )
-        return None
+                    )]
+        return []
