@@ -27,7 +27,7 @@ def get_llm() -> ChatOllama:
     return ChatOllama(
         model=model,
         base_url=base_url,
-        temperature=0.0,
+        temperature=0.2,
     )
 
 def build_explain_chain():
@@ -70,7 +70,24 @@ def build_optimize_chain():
          "- Provide 3 to 8 suggestions.\n"
          "- Include index SQL statements if helpful.\n"
          "- Provide rewritten_sql only if you are confident it parses in the dialect.\n"
-         "- MUST include a 'confidence' field (low/medium/high) for your overall assessment.\n")
+         "- MUST include a 'confidence' field (low/medium/high) for your overall assessment.\n"
+         "- Actions must follow below instructions:\n"
+            "  1. MUST NOT be any SQL statements (CREATE INDEX, SELECT with LIMIT, etc.)\n"
+            "  2. MUST BE plain English instructions (e.g., 'Add LIMIT to the query')\n"
+         "- Do NOT invent SQL syntax like 'ALTER QUERY' - this is not valid SQL.\n"
+         "- For LIMIT suggestions, put the full rewritten query in 'rewrite_sql' field.\n"
+         "CRITICAL - Follow these field types EXACTLY:\n"
+         "- 'rewritten_sql': STRING or null (NOT a list/array)\n"
+         "- 'confidence': STRING ('low', 'medium', or 'high')\n"
+         "- 'suggestions': ARRAY of suggestion objects\n"
+         "  Each suggestion object must have:\n"
+         "  - 'title': STRING\n"
+         "  - 'impact': STRING ('low', 'medium', or 'high')\n"
+         "  - 'rationale': STRING\n"
+         "  - 'actions': ARRAY of strings\n"
+         "  - 'index_sql': ARRAY of strings\n"
+         "  - 'rewrite_sql': STRING or null (NOT a list/array)\n"
+         "  - 'caveats': ARRAY of strings\n")
     ])
 
     return prompt | get_llm() | parser

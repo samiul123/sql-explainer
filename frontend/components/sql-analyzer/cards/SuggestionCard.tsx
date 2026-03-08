@@ -16,6 +16,17 @@ const IMPACT_COLORS: Record<string, string> = {
 };
 
 export function SuggestionCard({ suggestion, onCopy, copied }: SuggestionCardProps) {
+  // Filter out actions that are already shown in index_sql or rewrite_sql
+  const indexSqlSet = new Set(suggestion.index_sql?.map((s) => s.trim()) ?? []);
+  const filteredActions = suggestion.actions?.filter((action) => {
+    const trimmed = action.trim();
+    // Skip if action is already in index_sql
+    if (indexSqlSet.has(trimmed)) return false;
+    // Skip if action matches rewrite_sql
+    if (suggestion.rewrite_sql && trimmed === suggestion.rewrite_sql.trim()) return false;
+    return true;
+  }) ?? [];
+
   return (
     <div className="bg-slate-800 border border-white/10 rounded-2xl p-4">
       <div className="flex justify-between gap-2">
@@ -25,11 +36,11 @@ export function SuggestionCard({ suggestion, onCopy, copied }: SuggestionCardPro
 
       <div className="text-xs opacity-90 mt-1.5">{suggestion.rationale}</div>
 
-      {suggestion.actions?.length > 0 && (
+      {filteredActions.length > 0 && (
         <>
           <div className="text-xs opacity-90 mt-2.5">Actions</div>
           <CodeBlock>
-            {suggestion.actions.map((a) => `- ${a}`).join("\n")}
+            {filteredActions.map((a) => `- ${a}`).join("\n")}
           </CodeBlock>
         </>
       )}

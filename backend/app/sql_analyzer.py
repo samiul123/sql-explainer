@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
+import sqlglot
 from sqlglot import exp
 
 from .dialects import get_linter
@@ -15,7 +16,18 @@ __all__ = [
     "extract_structure_for_llm",
     "generate_logical_sequence",
     "analyze_sql",
+    "prettify_sql",
 ]
+
+
+def prettify_sql(sql: Optional[str], dialect: str = "postgres") -> Optional[str]:
+    """Pretty-print SQL using sqlglot. Returns original if formatting fails."""
+    if not sql:
+        return sql
+    try:
+        return sqlglot.transpile(sql, read=dialect, pretty=True)[0]
+    except Exception:
+        return sql  # Return original if parsing fails
 
 
 def extract_structure_for_llm(tree: exp.Expression) -> Dict[str, Any]:
@@ -241,6 +253,11 @@ def analyze_sql(req: AnalyzeRequest) -> AnalyzeResponse:
         else "medium"
     )
 
+    # Prettify SQL in suggestions
+    for suggestion in optimize_out.suggestions:
+        if suggestion.rewrite_sql:
+            suggestion.rewrite_sql = prettify_sql(suggestion.rewrite_sql, req.dialect)
+
     return AnalyzeResponse(
         dialect=req.dialect,
         normalized_sql=normalized_sql,
@@ -252,6 +269,6 @@ def analyze_sql(req: AnalyzeRequest) -> AnalyzeResponse:
         assumptions=explain_out.assumptions,
         issues=issues,
         suggestions=optimize_out.suggestions,
-        rewritten_sql=optimize_out.rewritten_sql,
+        rewritten_sql=prettify_sql(optimize_out.rewritten_sql, req.dialect),
         confidence=confidence,
     )
